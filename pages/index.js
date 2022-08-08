@@ -4,20 +4,22 @@ export default function Home() {
   return (
     <div className="container">
       <Head>
-        <title>Create Next App</title>
+        <title>Dragnal.us</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main>
         <h1 className="title">
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Dragnal.<a href="https://nextjs.org">us</a>
         </h1>
 
-        <p className="description">
-          Get started by editing <code>pages/index.js</code>
-        </p>
+        <img src="/drag.jpg" alt="drag" className="logo"  />
 
-        <div className="grid">
+        {/* <p className="description">
+          Get started by editing <code>pages/index.js</code>
+        </p> */}
+
+        {/* <div className="grid">
           <a href="https://nextjs.org/docs" className="card">
             <h3>Documentation &rarr;</h3>
             <p>Find in-depth information about Next.js features and API.</p>
@@ -45,10 +47,10 @@ export default function Home() {
               Instantly deploy your Next.js site to a public URL with Vercel.
             </p>
           </a>
-        </div>
+        </div> */}
       </main>
 
-      <footer>
+      {/* <footer>
         <a
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
           target="_blank"
@@ -57,11 +59,12 @@ export default function Home() {
           Powered by{' '}
           <img src="/vercel.svg" alt="Vercel" className="logo" />
         </a>
-      </footer>
+      </footer> */}
 
       <style jsx>{`
         .container {
           min-height: 100vh;
+          background: #fafafa;
           padding: 0 0.5rem;
           display: flex;
           flex-direction: column;
@@ -103,7 +106,7 @@ export default function Home() {
         }
 
         .title a {
-          color: #0070f3;
+          color: #95682a;
           text-decoration: none;
         }
 
@@ -114,7 +117,7 @@ export default function Home() {
         }
 
         .title {
-          margin: 0;
+          margin: 0 0 50px 0;
           line-height: 1.15;
           font-size: 4rem;
         }
@@ -179,7 +182,11 @@ export default function Home() {
         }
 
         .logo {
-          height: 1em;
+          // height: 1em;
+          -moz-border-radius: 15px; //for mozilla support
+          -webkit-border-radius: 15px; //for chrome support
+          border-radius: 15px;
+          mask-image: radial-gradient(ellipse, rgba(0, 0, 0, 1.0) 50%, transparent 100%);
         }
 
         @media (max-width: 600px) {

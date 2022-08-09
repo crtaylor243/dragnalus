@@ -8,9 +8,10 @@ export default function Home() {
   const [musicCount, setmusicCount] = useState(0);
   const [musics, setMusics] = useState([]);
   const [image, setImage] = useState(defaultImage);
+  const [visitorIndex, setVisitorIndex] = useState(Math.floor(Math.random()*3));
 
   const visitorCounts = [69, 420, 666];
-  const visitorCount = visitorCounts[Math.floor(Math.random()*3)];
+  const visitorCount = visitorCounts[visitorIndex];
 
 
   function pickImage() {

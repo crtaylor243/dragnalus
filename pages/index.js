@@ -13,6 +13,10 @@ export default function Home() {
           Dragnal.<a href="https://www.dragnal.us">us</a>
         </h1>
 
+        <h3>
+          Visitor count: <strong>69</strong>
+        </h3>
+
         
 
         {/* <audio id="drag" controls>
@@ -22,7 +26,7 @@ export default function Home() {
 
         
           <img onClick={(e) => playMusic()} src="/drag.jpg" className="logo" />                  
-        <span>Click on the photo. Keep clicking to reveal your inner noise musician</span>
+        <span>Click the photo. Keep clicking to reveal your inner noise musician.</span>
 
         
 
@@ -37,9 +41,7 @@ export default function Home() {
           Powered by{' '}
           <img src="/vercel.svg" alt="Vercel" className="logo" />
         </a> */}
-        <h3>
-          Visitor count: <strong>69</strong>
-        </h3>
+        
       </footer>
 
       <style jsx>{`

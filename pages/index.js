@@ -19,11 +19,11 @@ export default function Home() {
     const tail = ".jpg";
     let img = 1;
 
-    if (musicCount > 12) {
+    if (musicCount > 20) {
       img = 4;
-    } else if (musicCount > 8) {
+    } else if (musicCount > 10) {
       img = 3;
-    } else if (musicCount > 4) {
+    } else if (musicCount > 5) {
       img = 2;
     }
 

@@ -5,6 +5,9 @@ export default function Home() {
   const visitorCounts = [69, 420, 666];
   const visitorCount = visitorCounts[Math.floor(Math.random()*3)];
 
+
+
+
   return (
     <div className="container">
       <Head>
@@ -21,8 +24,12 @@ export default function Home() {
           Visitor count: <strong>{visitorCount}</strong>
         </h3>
 
+        {/*<h3>*/}
+        {/*  DJ Level: <strong>{visitorCount}</strong>*/}
+        {/*</h3>*/}
+
         <img onClick={(e) => playMusic()} src="/drag.jpg" className="drag" />
-        <p>Click the photo. Keep clicking to reveal your inner noise musician.</p>
+        <p className="drag-text">Click the photo. Keep clicking to reveal your inner noise musician.</p>
       </main>
     </div>
   )

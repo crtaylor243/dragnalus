@@ -10,8 +10,12 @@ export default function Home() {
 
       <main>
         <h1 className="title">
-          Dragnal.<a href="https://nextjs.org">us</a>
+          Dragnal.<a href="https://www.dragnal.us">us</a>
         </h1>
+
+        <h3>
+          Visitor count: <strong>69</strong>
+        </h3>
 
         <audio controls>
           <source src="dragnalus_unwound.mp3" type="audio/mp3"/>
@@ -19,41 +23,10 @@ export default function Home() {
         </audio>
 
         <img src="/drag.jpg" alt="drag" className="logo"/>
+
+        
         
 
-        {/* <p className="description">
-          Get started by editing <code>pages/index.js</code>
-        </p> */}
-
-        {/* <div className="grid">
-          <a href="https://nextjs.org/docs" className="card">
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className="card">
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className="card"
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="card"
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div> */}
       </main>
 
       {/* <footer>
@@ -104,14 +77,14 @@ export default function Home() {
           display: flex;
           justify-content: center;
           align-items: center;
-        }
+        }        
 
-        a {
-          color: inherit;
+        .title a {
+          color: #95682a;
           text-decoration: none;
         }
 
-        .title a {
+        h3 strong {
           color: #95682a;
           text-decoration: none;
         }

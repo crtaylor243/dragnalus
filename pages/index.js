@@ -1,12 +1,21 @@
 import Head from 'next/head'
+import {useState} from "react";
 
 export default function Home() {
+
+  const [musicCount, setmusicCount] = useState(0);
 
   const visitorCounts = [69, 420, 666];
   const visitorCount = visitorCounts[Math.floor(Math.random()*3)];
 
-
-
+  function playMusic() {;
+    let music = new Audio();
+    music.pause();
+    music = new Audio("/dragnalus_unwound.mp3");
+    music.play();
+    setmusicCount(musicCount + 1);
+    console.log("music count = ", musicCount);
+  }
 
   return (
     <div className="container">
@@ -24,9 +33,9 @@ export default function Home() {
           Visitor count: <strong>{visitorCount}</strong>
         </h3>
 
-        {/*<h3>*/}
-        {/*  DJ Level: <strong>{visitorCount}</strong>*/}
-        {/*</h3>*/}
+        { musicCount > 10 &&
+            <h3>Rank: Noise God</h3>
+        }
 
         <img onClick={(e) => playMusic()} src="/drag.jpg" className="drag" />
         <p className="drag-text">Click the photo. Keep clicking to reveal your inner noise musician.</p>
@@ -35,10 +44,3 @@ export default function Home() {
   )
 }
 
-function playMusic() {;
-  console.log('The link was clicked.');
-  var music = new Audio();
-    music.pause();
-    music = new Audio("/dragnalus_unwound.mp3");
-    music.play();
-}

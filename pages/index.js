@@ -32,7 +32,7 @@ export default function Home() {
 
       </main>
 
-       <footer>
+       {/* <footer> */}
         {/* <a
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
           target="_blank"
@@ -42,7 +42,7 @@ export default function Home() {
           <img src="/vercel.svg" alt="Vercel" className="logo" />
         </a> */}
         
-      </footer>
+      {/* </footer> */}
 
       <style jsx>{`
         .container {

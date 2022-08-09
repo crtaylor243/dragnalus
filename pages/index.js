@@ -17,12 +17,12 @@ export default function Home() {
           Visitor count: <strong>69</strong>
         </h3>
 
-        <audio controls>
+        {/* <audio id="drag" controls>
           <source src="dragnalus_unwound.mp3" type="audio/mp3"/>
         Your browser does not support the audio element.
-        </audio>
+        </audio> */}
 
-        <img src="/drag.jpg" alt="drag" className="logo"/>
+        <img onClick={(e) => playMusic()} src="/drag.jpg" alt="drag" className="logo"/>
 
         
         
@@ -192,4 +192,12 @@ export default function Home() {
       `}</style>
     </div>
   )
+}
+
+function playMusic() {;
+  console.log('The link was clicked.');
+  var music = new Audio();
+    music.pause();
+    music = new Audio("/dragnalus_unwound.mp3");
+    music.play();
 }

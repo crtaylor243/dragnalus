@@ -2,6 +2,9 @@ import Head from 'next/head'
 
 export default function Home() {
 
+  const visitorCounts = [69, 420, 666];
+  const visitorCount = visitorCounts[Math.floor(Math.random()*3)];
+
   return (
     <div className="container">
       <Head>
@@ -15,7 +18,7 @@ export default function Home() {
         </h1>
 
         <h3>
-          Visitor count: <strong>69</strong>
+          Visitor count: <strong>{visitorCount}</strong>
         </h3>
 
         <img onClick={(e) => playMusic()} src="/drag.jpg" className="drag" />

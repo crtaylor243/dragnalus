@@ -13,16 +13,12 @@ export default function Home() {
           Dragnal.<a href="https://nextjs.org">us</a>
         </h1>
 
-        <img src="/drag.jpg" alt="drag" className="logo"  />
-        {/* <img src="/unwound.jpg" alt="drag" className="logo"  /> */}
-
-        <div>
         <audio controls>
           <source src="dragnalus_unwound.mp3" type="audio/mp3"/>
         Your browser does not support the audio element.
         </audio>
 
-        </div>
+        <img src="/drag.jpg" alt="drag" className="logo"/>
         
 
         {/* <p className="description">

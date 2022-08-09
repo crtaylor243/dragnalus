@@ -71,7 +71,9 @@ export default function Home() {
         </h3>
 
         <img onClick={(e) => playMusic()} src={image} className="drag" />
-        <p className="drag-text">Click the photo. Keep clicking to reveal your inner noise musician.</p>
+        <div className="instructions">
+          <p className="drag-text">Click the photo. Keep clicking to reveal your <strong>inner noise musician</strong>.</p>
+        </div>
 
         { musicCount > 10 &&
             <h3>Rank: <strong>Noise God</strong></h3>

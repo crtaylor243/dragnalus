@@ -34,7 +34,7 @@ export default function Home() {
         </h3>
 
         { musicCount > 10 &&
-            <h3>Rank: Noise God</h3>
+            <h3>Rank: <strong>Noise God</strong></h3>
         }
 
         <img onClick={(e) => playMusic()} src="/drag.jpg" className="drag" />

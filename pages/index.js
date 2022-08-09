@@ -22,7 +22,7 @@ export default function Home() {
         Your browser does not support the audio element.
         </audio> */}
 
-        <img onClick={(e) => playMusic()} src="/drag.jpg" alt="drag" className="logo"/>
+        <img onClick={(e) => playMusic()} src="/drag.jpg" title="Click on the photo. Keep clicking to reveal your inner noise musician" className="logo"/>
 
         
         

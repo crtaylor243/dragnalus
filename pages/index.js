@@ -1,14 +1,37 @@
 import Head from 'next/head'
 import {useState} from "react";
+import {pick} from "next/dist/lib/pick";
 
 export default function Home() {
+  const defaultImage = "drag-1.jpg";
 
   const [musicCount, setmusicCount] = useState(0);
   const [musics, setMusics] = useState([]);
-
+  const [image, setImage] = useState(defaultImage);
 
   const visitorCounts = [69, 420, 666];
   const visitorCount = visitorCounts[Math.floor(Math.random()*3)];
+
+
+  function pickImage() {
+    const base = "drag-";
+    const tail = ".jpg";
+    let img = 1;
+
+    if (musicCount > 12) {
+      img = 4;
+    } else if (musicCount > 8) {
+      img = 3;
+    } else if (musicCount > 4) {
+      img = 2;
+    }
+
+    setImage(base + img + tail);
+  }
+
+  function resetImage() {
+    setImage(defaultImage);
+  }
 
   function playMusic() {;
     let music = new Audio();
@@ -17,6 +40,7 @@ export default function Home() {
     music.play();
     setmusicCount(musicCount + 1);
     setMusics([...musics, music]);
+    pickImage()
     console.log("music count = ", musicCount);
   }
 
@@ -24,6 +48,8 @@ export default function Home() {
     musics.forEach(m => m.pause());
     setMusics([]);
     setmusicCount(0);
+
+    resetImage();
     console.log("music count = ", musicCount);
   }
 
@@ -43,13 +69,12 @@ export default function Home() {
           Visitor count: <strong>{visitorCount}</strong>
         </h3>
 
+        <img onClick={(e) => playMusic()} src={image} className="drag" />
+        <p className="drag-text">Click the photo. Keep clicking to reveal your inner noise musician.</p>
+
         { musicCount > 10 &&
             <h3>Rank: <strong>Noise God</strong></h3>
         }
-
-        <img onClick={(e) => playMusic()} src="/drag.jpg" className="drag" />
-        <p className="drag-text">Click the photo. Keep clicking to reveal your inner noise musician.</p>
-
 
         { musicCount >= 2 &&
             <footer>

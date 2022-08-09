@@ -13,32 +13,34 @@ export default function Home() {
           Dragnal.<a href="https://www.dragnal.us">us</a>
         </h1>
 
-        <h3>
-          Visitor count: <strong>69</strong>
-        </h3>
+        
 
         {/* <audio id="drag" controls>
           <source src="dragnalus_unwound.mp3" type="audio/mp3"/>
         Your browser does not support the audio element.
         </audio> */}
 
-        <img onClick={(e) => playMusic()} src="/drag.jpg" title="Click on the photo. Keep clicking to reveal your inner noise musician" className="logo"/>
-
         
+          <img onClick={(e) => playMusic()} src="/drag.jpg" className="logo" />                  
+        <span>Click on the photo. Keep clicking to reveal your inner noise musician</span>
+
         
 
       </main>
 
-      {/* <footer>
-        <a
+       <footer>
+        {/* <a
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
           target="_blank"
           rel="noopener noreferrer"
         >
           Powered by{' '}
           <img src="/vercel.svg" alt="Vercel" className="logo" />
-        </a>
-      </footer> */}
+        </a> */}
+        <h3>
+          Visitor count: <strong>69</strong>
+        </h3>
+      </footer>
 
       <style jsx>{`
         .container {
@@ -51,8 +53,13 @@ export default function Home() {
           align-items: center;
         }
 
+        .imgBox {
+          display: flex;
+          flex-direction: row
+        }
+
         main {
-          padding: 5rem 0;
+          padding: 1rem 0;
           flex: 1;
           display: flex;
           flex-direction: column;
@@ -96,7 +103,7 @@ export default function Home() {
         }
 
         .title {
-          margin: 0 0 50px 0;
+          margin: 0 0 25px 0;
           line-height: 1.15;
           font-size: 4rem;
         }

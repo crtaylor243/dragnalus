@@ -4,6 +4,8 @@ import {useState} from "react";
 export default function Home() {
 
   const [musicCount, setmusicCount] = useState(0);
+  const [musics, setMusics] = useState([]);
+
 
   const visitorCounts = [69, 420, 666];
   const visitorCount = visitorCounts[Math.floor(Math.random()*3)];
@@ -14,6 +16,14 @@ export default function Home() {
     music = new Audio("/dragnalus_unwound.mp3");
     music.play();
     setmusicCount(musicCount + 1);
+    setMusics([...musics, music]);
+    console.log("music count = ", musicCount);
+  }
+
+  function stopMusic() {
+    musics.forEach(m => m.pause());
+    setMusics([]);
+    setmusicCount(0);
     console.log("music count = ", musicCount);
   }
 
@@ -39,6 +49,14 @@ export default function Home() {
 
         <img onClick={(e) => playMusic()} src="/drag.jpg" className="drag" />
         <p className="drag-text">Click the photo. Keep clicking to reveal your inner noise musician.</p>
+
+
+        { musicCount >= 2 &&
+            <footer>
+              <p className="drag-text">please god make it stop</p>
+              <button onClick={(e) => stopMusic()}>END ME</button>
+            </footer>
+        }
       </main>
     </div>
   )

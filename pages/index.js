@@ -82,7 +82,9 @@ export default function Home() {
         { musicCount >= 2 &&
             <footer>
               <p className="drag-text">please god make it stop</p>
-              <button onClick={(e) => stopMusic()}>END ME</button>
+              <button onClick={(e) => stopMusic()}>
+                <span>END ME</span><
+              /button>
             </footer>
         }
       </main>

@@ -19,11 +19,11 @@ export default function Home() {
     const tail = ".jpg";
     let img = 1;
 
-    if (musicCount > 20) {
+    if (musicCount > 30) {
       img = 4;
-    } else if (musicCount > 10) {
+    } else if (musicCount > 20) {
       img = 3;
-    } else if (musicCount > 5) {
+    } else if (musicCount > 10) {
       img = 2;
     }
 
@@ -63,7 +63,7 @@ export default function Home() {
 
       <main>
         <h1 className="title">
-          Dragnal.<a href="https://www.dragnal.us">us</a>
+          Dragnal.<strong>us</strong>
         </h1>
 
         <h3>
@@ -71,22 +71,24 @@ export default function Home() {
         </h3>
 
         <img onClick={(e) => playMusic()} src={image} className="drag" />
-        <div className="instructions">
-          <p className="drag-text">Click the photo. Keep clicking to reveal your <strong>inner noise musician</strong>.</p>
-        </div>
+        <p className="drag-text">Click the photo. Keep clicking to reveal your <strong>inner noise musician</strong>.</p>
 
-        { musicCount > 10 &&
+        { musicCount > 20 &&
             <h3>Rank: <strong>Noise God</strong></h3>
         }
 
-        { musicCount >= 2 &&
-            <footer>
-              <p className="drag-text">please god make it stop</p>
-              <button onClick={(e) => stopMusic()}>
-                <span>END ME</span><
-              /button>
-            </footer>
-        }
+        <footer>
+          { musicCount >= 2 &&
+              <div className="card">
+                <button onClick={(e) => stopMusic()}>
+                    <div className="endme">
+                      <span>END ME</span>
+                    </div>
+                </button>
+                <p className="drag-text">please god make it stop</p>
+              </div>
+          }
+        </footer>
       </main>
     </div>
   )

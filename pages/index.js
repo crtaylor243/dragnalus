@@ -19,15 +19,17 @@ export default function Home() {
     const tail = ".jpg";
     let img = 1;
 
-    if (musicCount > 30) {
+    if (musicCount >= 30) {
       img = 4;
-    } else if (musicCount > 20) {
+    } else if (musicCount >= 20) {
       img = 3;
-    } else if (musicCount > 10) {
+    } else if (musicCount >= 10) {
       img = 2;
     }
 
-    setImage(base + img + tail);
+    const image = base + img + tail;
+    console.log("picking image: ", image)
+    setImage(image);
   }
 
   function resetImage() {
@@ -66,18 +68,22 @@ export default function Home() {
           Dragnal.<strong>us</strong>
         </h1>
 
-        <h3>
-          Visitor count: <strong>{visitorCount}</strong>
-        </h3>
+        <div className="card">
+          { musicCount > 30 &&
+            <h3>Rank: <strong>Noise God</strong></h3>
+          }
+          { musicCount <= 30 &&
+          <h3>- - -</h3>
+          }
+        </div>
 
         <img onClick={(e) => playMusic()} src={image} className="drag" />
         <p className="drag-text">Click the photo. Keep clicking to reveal your <strong>inner noise musician</strong>.</p>
 
-        { musicCount > 20 &&
-            <h3>Rank: <strong>Noise God</strong></h3>
-        }
-
         <footer>
+          <h3>
+            Visitor count: <strong>{visitorCount}</strong>
+          </h3>
           { musicCount >= 2 &&
               <div className="card">
                 <button onClick={(e) => stopMusic()}>

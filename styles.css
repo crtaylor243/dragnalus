@@ -60,10 +60,11 @@ img:hover {
 button {
     border-radius: 20px;
     text-align: center;
-    font-size: 28px;
-    width: 200px;
+    /*font-size: 25px;*/
+    width: 220px;
+    height: 50px;
     transition: all 0.5s;
-    margin: 20px 0;
+    margin: 10px 0 10px 0;
 }
 
 .title {
@@ -103,9 +104,9 @@ code {
 
 
 .card p {
-    margin: 0;
-    font-size: 1.25rem;
-    line-height: 1.5;
+    margin: 5px;
+    /*font-size: 1.25rem;*/
+    /*line-height: 1.5;*/
 }
 
 .drag {

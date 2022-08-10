@@ -84,14 +84,11 @@ export default function Home() {
           <h3>
             Visitor count: <strong>{visitorCount}</strong>
           </h3>
-          { musicCount >= 2 &&
+          { musicCount > 5 &&
               <div className="card">
                 <button onClick={(e) => stopMusic()}>
-                    <div className="endme">
-                      <span>END ME</span>
-                    </div>
+                  <p className="drag-text">please god <strong>make it stop</strong></p>
                 </button>
-                <p className="drag-text">please god make it stop</p>
               </div>
           }
         </footer>

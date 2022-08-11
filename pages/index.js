@@ -3,7 +3,7 @@ import {useState} from "react";
 import {pick} from "next/dist/lib/pick";
 
 export default function Home() {
-  const defaultImage = "drag-1.jpg";
+  const defaultImage = isBirthday() ? "drag-1-bday.jpg" : "drag-1.jpg";
 
   const [musicCount, setmusicCount] = useState(0);
   const [musics, setMusics] = useState([]);
@@ -17,6 +17,7 @@ export default function Home() {
   function pickImage() {
     const base = "drag-";
     const tail = ".jpg";
+    const birthday = isBirthday() ? "-bday" : "";
     let img = 1;
 
     if (musicCount >= 30) {
@@ -27,9 +28,16 @@ export default function Home() {
       img = 2;
     }
 
-    const image = base + img + tail;
+    const image = base + img + birthday + tail;
     console.log("picking image: ", image)
     setImage(image);
+  }
+
+  function isBirthday() {
+    const birthDate = new Date(2021, 7, 11);
+    const today = new Date()
+    return birthDate.getDate() === today.getDate() &&
+        birthDate.getMonth() === today.getMonth();
   }
 
   function resetImage() {

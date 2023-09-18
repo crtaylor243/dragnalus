@@ -3,11 +3,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "stage": "vercel",
+    "deploy": "vercel --prod"
   },
   "dependencies": {
     "next": "latest",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "vercel": "^32.2.5"
   }
 }

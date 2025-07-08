@@ -7,11 +7,11 @@ export default function Home() {
   const [musicCount, setmusicCount] = useState(0);
   const [musics, setMusics] = useState([]);
   const [image, setImage] = useState("");
+  const [imageNumber, setImageNumber] = useState(1);
   const [visitorIndex, setVisitorIndex] = useState(Math.floor(Math.random()*3));
   const [isClipping, setIsClipping] = useState(false);
   const [tennisBalls, setTennisBalls] = useState([]);
-  const [goodBoyMode, setGoodBoyMode] = useState(false);
-  const lastBallTimeRef = useRef(0);
+  const [goodBoyMode, setGoodBoyMode] = useState(true);
 
   const visitorCounts = [69, 420, 666];
   const visitorCount = visitorCounts[visitorIndex];
@@ -29,15 +29,7 @@ export default function Home() {
   async function pickMedia() {
     const base = "drag-";
     const birthday = isBirthday() ? "-bday" : "";
-    let num = 1;
-
-    if (musicCount >= 30) {
-      num = 4;
-    } else if (musicCount >= 20) {
-      num = 3;
-    } else if (musicCount >= 10) {
-      num = 2;
-    }
+    const num = imageNumber;
 
     // Try GIF first, then fallback to JPG
     const gifPath = base + num + birthday + ".gif";
@@ -67,6 +59,7 @@ export default function Home() {
   }
 
   async function resetMedia() {
+    setImageNumber(1);
     const base = "drag-1";
     const birthday = isBirthday() ? "-bday" : "";
     const gifPath = base + birthday + ".gif";
@@ -82,10 +75,15 @@ export default function Home() {
     music.pause();
     music = new Audio("/dragnalus_unwound.mp3");
     music.play();
-    setmusicCount(musicCount + 1);
+    const newCount = musicCount + 1;
+    setmusicCount(newCount);
     setMusics([...musics, music]);
-    pickMedia()
-    console.log("music count = ", musicCount);
+    
+    // Cycle through images 1-4
+    const nextImageNumber = imageNumber >= 4 ? 4 : imageNumber + 1;
+    setImageNumber(nextImageNumber);
+    
+    console.log("music count = ", newCount);
   }
 
   function stopMusic() {
@@ -103,34 +101,53 @@ export default function Home() {
     resetMedia();
   }, []);
 
+  // Update media when image number changes
+  useEffect(() => {
+    if (imageNumber > 1) {
+      pickMedia();
+    }
+  }, [imageNumber]);
+
   // Handle tennis ball animation
   const handleClipping = (clippingState) => {
     setIsClipping(clippingState);
-    
-    // Add a new tennis ball when clipping starts (max 25 per second)
-    if (clippingState) {
-      const now = Date.now();
-      if (now - lastBallTimeRef.current < 40) return; // 1000ms / 25 = 40ms minimum interval
-      lastBallTimeRef.current = now;
-      
-      // Determine if this ball should bounce (20% chance)
-      const shouldBounce = Math.random() < 0.2;
-      
-      const newBall = {
-        id: Date.now() + Math.random(),
-        x: Math.random() * 90 + 5, // Random position between 5% and 95%
-        y: -40, // Start above viewport
-        vx: Math.random() * 60 - 30, // Horizontal velocity -30 to 30 px/s
-        vy: Math.random() * 50 - 25, // Initial velocity -25 to 25 px/s
-        rotation: 0,
-        rotationSpeed: Math.random() * 360 - 180, // Random rotation speed
-        shouldBounce: shouldBounce,
-        hasBounced: false,
-        startTime: Date.now()
-      };
-      setTennisBalls(prev => [...prev, newBall]);
-    }
   };
+
+  // Continuous ball spawning while clipping
+  useEffect(() => {
+    if (!isClipping) return;
+
+    const spawnBalls = () => {
+      // Spawn multiple balls per frame for maximum chaos
+      for (let i = 0; i < 3; i++) {
+        // Determine if this ball should bounce (90% chance)
+        const shouldBounce = Math.random() < 0.9;
+        
+        // Get image bottom position to spawn balls below it
+        const imgElement = document.querySelector('.drag');
+        const imageBottom = imgElement ? imgElement.offsetTop + imgElement.offsetHeight + 50 : 300;
+
+        const newBall = {
+          id: Date.now() + Math.random() + i,
+          x: Math.random() * 90 + 5, // Random position between 5% and 95%
+          y: imageBottom, // Start below the image
+          vx: Math.random() * 300 - 150, // Much higher horizontal velocity -150 to 150 px/s
+          vy: Math.random() * 100 + 50, // Initial downward velocity 50 to 150 px/s
+          rotation: 0,
+          rotationSpeed: Math.random() * 720 - 360, // Faster rotation
+          shouldBounce: shouldBounce,
+          hasBounced: false,
+          startTime: Date.now()
+        };
+        
+        setTennisBalls(prev => [...prev, newBall]);
+      }
+    };
+
+    const interval = setInterval(spawnBalls, 50); // Spawn every 50ms
+    
+    return () => clearInterval(interval);
+  }, [isClipping]);
 
   // Physics animation for tennis balls
   useEffect(() => {
@@ -143,9 +160,9 @@ export default function Home() {
       const deltaTime = (currentTime - lastTime) / 1000; // Convert to seconds
       lastTime = currentTime;
 
-      // Get divider position (approximate)
-      const footer = document.querySelector('footer');
-      const dividerY = footer ? footer.offsetTop - 10 : window.innerHeight * 0.75;
+      // Get divider position (top of footer)
+      const footerHeight = 200; // Fixed footer height
+      const dividerY = window.innerHeight - footerHeight - 10;
 
       setTennisBalls(prev => prev.map(ball => {
         let newVy = ball.vy + gravity * deltaTime;
@@ -172,7 +189,12 @@ export default function Home() {
           rotation: newRotation,
           hasBounced: newHasBounced
         };
-      }).filter(ball => ball.y < window.innerHeight + 40)); // Remove balls that fell off screen
+      }).filter(ball => {
+        // Remove balls that are off screen (including horizontally)
+        return ball.y < window.innerHeight + 40 && 
+               ball.x > -10 && 
+               ball.x < 110;
+      }));
 
       animationFrame = requestAnimationFrame(animate);
     };
@@ -199,7 +221,6 @@ export default function Home() {
         </h1>
 
         <img onClick={(e) => playMusic()} src={image} className="drag" />
-        <Waveform isPlaying={musicCount > 0} audioElements={musics} onClippingChange={handleClipping} />
         
         <div className="card">
           { musicCount >= 30 &&
@@ -212,19 +233,6 @@ export default function Home() {
         
         <p className="drag-text">Click the photo. Keep clicking to reveal your <strong>inner noise musician</strong>.</p>
 
-        { isClipping &&
-            <div className="card">
-              <button onClick={(e) => stopMusic()}>
-                <p className="drag-text">please god <strong>make it stop</strong></p>
-              </button>
-            </div>
-        }
-
-        <footer>
-          <h3>
-            Visitor count: <strong>{visitorCount}</strong>
-          </h3>
-        </footer>
       </main>
 
       {/* Tennis balls */}
@@ -240,23 +248,38 @@ export default function Home() {
         />
       ))}
 
-      {/* Good Boy Mode Toggle */}
-      {isClipping && (
-        <div className="good-boy-toggle">
-          <label className="toggle-label">
-            <input
-              type="checkbox"
-              checked={goodBoyMode}
-              onChange={(e) => setGoodBoyMode(e.target.checked)}
-              className="toggle-input"
-            />
-            <span className="toggle-slider"></span>
-            <span className="toggle-text">
-              <strong>good boy</strong> mode
-            </span>
-          </label>
+      {/* Footer */}
+      <footer>
+        <Waveform isPlaying={musicCount > 0} audioElements={musics} onClippingChange={handleClipping} />
+        <div className="footer-content">
+          <h3 className="visitor-count">
+            Visitor count: <strong>{visitorCount}</strong>
+          </h3>
+          
+          {/* Stop Button */}
+          {isClipping && (
+            <button className="stop-button" onClick={(e) => stopMusic()}>
+              <p className="drag-text">please god <strong>make it stop</strong></p>
+            </button>
+          )}
+          
+          {/* Good Boy Mode Toggle */}
+          <div className="good-boy-toggle">
+            <label className="toggle-label">
+              <input
+                type="checkbox"
+                checked={goodBoyMode}
+                onChange={(e) => setGoodBoyMode(e.target.checked)}
+                className="toggle-input"
+              />
+              <span className="toggle-slider"></span>
+              <span className="toggle-text">
+                <strong>good boy</strong> mode
+              </span>
+            </label>
+          </div>
         </div>
-      )}
+      </footer>
     </div>
   )
 }

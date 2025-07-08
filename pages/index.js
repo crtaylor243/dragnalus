@@ -81,10 +81,10 @@ export default function Home() {
         <Waveform isPlaying={musicCount > 0} audioElements={musics} />
         
         <div className="card">
-          { musicCount > 30 &&
+          { musicCount >= 10 &&
             <h3>Rank: <strong>Noise God</strong></h3>
           }
-          { musicCount <= 30 &&
+          { musicCount < 10 &&
           <h3>&nbsp;</h3>
           }
         </div>
@@ -95,7 +95,7 @@ export default function Home() {
           <h3>
             Visitor count: <strong>{visitorCount}</strong>
           </h3>
-          { musicCount > 5 &&
+          { musicCount >= 3 &&
               <div className="card">
                 <button onClick={(e) => stopMusic()}>
                   <p className="drag-text">please god <strong>make it stop</strong></p>

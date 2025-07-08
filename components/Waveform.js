@@ -206,22 +206,8 @@ const Waveform = ({ isPlaying, audioElements }) => {
       ctx.textAlign = 'center';
       ctx.fillText('CLIP', clipX + 25, clipY + 22);
       
-      // Distortion warning
-      if (connectedSourcesRef.current.size > 3) {
-        ctx.fillStyle = '#ff0000';
-        ctx.font = 'bold 14px monospace';
-        ctx.textAlign = 'center';
-        ctx.fillText('EXTREME DISTORTION!', width/2, height - 10);
-      }
     }
     
-    // Clip counter
-    if (clipCountRef.current > 0) {
-      ctx.fillStyle = '#ff6600';
-      ctx.font = '12px monospace';
-      ctx.textAlign = 'right';
-      ctx.fillText(`Clips: ${clipCountRef.current}`, meterX + meterWidth, meterY + meterHeight + 20);
-    }
     
     // Labels
     ctx.fillStyle = '#ccc';
@@ -229,30 +215,6 @@ const Waveform = ({ isPlaying, audioElements }) => {
     ctx.textAlign = 'center';
     ctx.fillText('PEAK METER', width/2, meterY - 25);
     
-    // Audio source counter
-    const sourceCount = connectedSourcesRef.current.size;
-    ctx.fillStyle = sourceCount > 5 ? '#ff0000' : '#888';
-    ctx.font = '12px monospace';
-    ctx.textAlign = 'left';
-    ctx.fillText(`Sources: ${sourceCount}`, meterX, meterY + meterHeight + 20);
-    
-    // Chaos level indicator
-    if (sourceCount > 0) {
-      const chaosLevel = Math.min(sourceCount / 10, 1);
-      const chaosText = 
-        sourceCount >= 10 ? 'MAXIMUM CHAOS' :
-        sourceCount >= 5 ? 'HIGH CHAOS' :
-        sourceCount >= 3 ? 'MODERATE CHAOS' : 'LOW CHAOS';
-      
-      ctx.fillStyle = 
-        sourceCount >= 10 ? '#ff0000' :
-        sourceCount >= 5 ? '#ff8800' :
-        sourceCount >= 3 ? '#ffff00' : '#00ff00';
-      
-      ctx.font = 'bold 12px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText(chaosText, width/2, meterY + meterHeight + 20);
-    }
   };
   
   const animate = () => {

@@ -91,17 +91,18 @@ export default function Home() {
         
         <p className="drag-text">Click the photo. Keep clicking to reveal your <strong>inner noise musician</strong>.</p>
 
+        { musicCount >= 3 &&
+            <div className="card">
+              <button onClick={(e) => stopMusic()}>
+                <p className="drag-text">please god <strong>make it stop</strong></p>
+              </button>
+            </div>
+        }
+
         <footer>
           <h3>
             Visitor count: <strong>{visitorCount}</strong>
           </h3>
-          { musicCount >= 3 &&
-              <div className="card">
-                <button onClick={(e) => stopMusic()}>
-                  <p className="drag-text">please god <strong>make it stop</strong></p>
-                </button>
-              </div>
-          }
         </footer>
       </main>
     </div>

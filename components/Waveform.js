@@ -79,15 +79,21 @@ const Waveform = ({ isPlaying, audioElements }) => {
     const meterWidth = width * 0.85;
     const meterX = (width - meterWidth) / 2;
     
-    // Background with warning flash
+    // Decrement warning flash counter
     if (warningFlashRef.current > 0) {
-      const flashIntensity = warningFlashRef.current / 20;
-      ctx.fillStyle = `rgba(255, 0, 0, ${flashIntensity * 0.2})`;
-      ctx.fillRect(0, 0, width, height);
       warningFlashRef.current--;
     }
     
-    // Meter background
+    // Meter background (flash red when clipping)
+    if (warningFlashRef.current > 0) {
+      const flashIntensity = warningFlashRef.current / 20;
+      const redValue = Math.floor(255 * flashIntensity * 0.3);
+      const flashColor = `rgb(${redValue}, 0, 0)`;
+      
+      ctx.fillStyle = flashColor;
+      ctx.fillRect(0, 0, width, height);
+    }
+    
     ctx.fillStyle = '#1a1a1a';
     ctx.strokeStyle = '#333';
     ctx.lineWidth = 2;
@@ -96,7 +102,7 @@ const Waveform = ({ isPlaying, audioElements }) => {
     
     // Draw dB scale
     ctx.font = '10px monospace';
-    ctx.fillStyle = '#888';
+    ctx.fillStyle = '#946928';
     const dbScale = [-60, -40, -20, -12, -6, -3, 0];
     dbScale.forEach((db) => {
       const x = meterX + ((db + 60) / 60) * meterWidth;
@@ -104,7 +110,7 @@ const Waveform = ({ isPlaying, audioElements }) => {
       ctx.fillText(db, x, meterY - 8);
       
       // Scale lines
-      ctx.strokeStyle = db === 0 ? '#ff0000' : '#444';
+      ctx.strokeStyle = db === 0 ? '#ff0000' : '#946928';
       ctx.lineWidth = db === 0 ? 2 : 1;
       ctx.beginPath();
       ctx.moveTo(x, meterY);
@@ -191,26 +197,31 @@ const Waveform = ({ isPlaying, audioElements }) => {
     ctx.lineTo(meterX + meterFillWidth, barY + barHeight + 5);
     ctx.stroke();
     
-    // Clipping indicator
+    // Page background flash on clipping
     if (clipHoldRef.current > 0) {
       clipHoldRef.current--;
       
-      // Red CLIP box
-      const clipX = meterX + meterWidth + 20;
-      const clipY = meterY + 10;
-      ctx.fillStyle = '#ff0000';
-      ctx.fillRect(clipX, clipY, 50, 30);
-      
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 16px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText('CLIP', clipX + 25, clipY + 22);
-      
+      // Flash entire page background red
+      if (warningFlashRef.current > 0) {
+        const flashIntensity = warningFlashRef.current / 20;
+        const redValue = Math.floor(255 * flashIntensity * 0.3);
+        const flashColor = `rgb(${redValue}, 0, 0)`;
+        
+        const container = document.querySelector('.container');
+        if (container) {
+          container.style.backgroundColor = flashColor;
+        }
+      } else {
+        const container = document.querySelector('.container');
+        if (container) {
+          container.style.backgroundColor = '#0a0a0a';
+        }
+      }
     }
     
     
     // Labels
-    ctx.fillStyle = '#ccc';
+    ctx.fillStyle = '#946928';
     ctx.font = 'bold 14px monospace';
     ctx.textAlign = 'center';
     ctx.fillText('PEAK METER', width/2, meterY - 25);
@@ -281,6 +292,11 @@ const Waveform = ({ isPlaying, audioElements }) => {
       clipHoldRef.current = 0;
       warningFlashRef.current = 0;
       connectedSourcesRef.current.clear();
+      // Reset page background
+      const container = document.querySelector('.container');
+      if (container) {
+        container.style.backgroundColor = '#0a0a0a';
+      }
     }
   }, [isPlaying]);
   

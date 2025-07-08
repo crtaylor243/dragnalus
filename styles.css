@@ -147,30 +147,42 @@ code {
 
 .waveform-container {
     width: 60%;
-    height: 80px;
+    height: 140px;
     margin: 20px 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(149, 104, 42, 0.05);
-    border-radius: 10px;
-    padding: 10px;
+    background: #0a0a0a;
+    border: 2px solid #333;
+    border-radius: 8px;
+    padding: 0;
     box-sizing: border-box;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.waveform-container.peak-meter {
+    background: linear-gradient(180deg, #0f0f0f 0%, #0a0a0a 100%);
+    border: 3px solid #222;
+    border-top-color: #333;
+    border-bottom-color: #111;
+    position: relative;
+    overflow: visible;
 }
 
 .waveform-canvas {
     width: 100%;
     height: 100%;
+    border-radius: 4px;
 }
 
 @media screen and (min-width: 1300px) {
     .waveform-container {
-        width: 513px;
+        width: 600px;
     }
 }
 
 @media screen and (min-width: 534px) and (max-width: 1299px) {
     .waveform-container {
-        width: 307px;
+        width: 400px;
     }
 }

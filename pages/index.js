@@ -78,7 +78,7 @@ export default function Home() {
         </h1>
 
         <img onClick={(e) => playMusic()} src={image} className="drag" />
-        <Waveform isPlaying={musicCount > 0} audioCount={musicCount} />
+        <Waveform isPlaying={musicCount > 0} audioElements={musics} />
         
         <div className="card">
           { musicCount > 30 &&

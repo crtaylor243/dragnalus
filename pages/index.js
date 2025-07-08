@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import {useState} from "react";
 import {pick} from "next/dist/lib/pick";
+import Waveform from '../components/Waveform';
 
 export default function Home() {
   const defaultImage = isBirthday() ? "drag-1-bday.jpg" : "drag-1.jpg";
@@ -76,16 +77,18 @@ export default function Home() {
           Dragnal.<strong>us</strong>
         </h1>
 
+        <img onClick={(e) => playMusic()} src={image} className="drag" />
+        <Waveform isPlaying={musicCount > 0} audioCount={musicCount} />
+        
         <div className="card">
           { musicCount > 30 &&
             <h3>Rank: <strong>Noise God</strong></h3>
           }
           { musicCount <= 30 &&
-          <h3>- - -</h3>
+          <h3>&nbsp;</h3>
           }
         </div>
-
-        <img onClick={(e) => playMusic()} src={image} className="drag" />
+        
         <p className="drag-text">Click the photo. Keep clicking to reveal your <strong>inner noise musician</strong>.</p>
 
         <footer>

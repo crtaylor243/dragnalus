@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-const Waveform = ({ isPlaying, audioElements }) => {
+const Waveform = ({ isPlaying, audioElements, onClippingChange }) => {
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
   const audioContextRef = useRef(null);
@@ -13,6 +13,7 @@ const Waveform = ({ isPlaying, audioElements }) => {
   const warningFlashRef = useRef(0);
   const connectedSourcesRef = useRef(new Set());
   const sumGainRef = useRef(null);
+  const lastClipTimeRef = useRef(0);
 
   const initializeAudioContext = () => {
     if (!audioContextRef.current && audioElements.length > 0) {
@@ -69,9 +70,8 @@ const Waveform = ({ isPlaying, audioElements }) => {
     const width = canvas.width;
     const height = canvas.height;
     
-    // Clear canvas with dark background
-    ctx.fillStyle = '#0a0a0a';
-    ctx.fillRect(0, 0, width, height);
+    // Clear canvas
+    ctx.clearRect(0, 0, width, height);
     
     // Draw meter frame
     const meterHeight = height * 0.7;
@@ -84,17 +84,27 @@ const Waveform = ({ isPlaying, audioElements }) => {
       warningFlashRef.current--;
     }
     
-    // Meter background (flash red when clipping)
+    // Create gradient background that fades from center to edges
+    const bgGradient = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, width/2);
+    
+    // Flash red when clipping, otherwise dark gradient
     if (warningFlashRef.current > 0) {
       const flashIntensity = warningFlashRef.current / 20;
       const redValue = Math.floor(255 * flashIntensity * 0.3);
-      const flashColor = `rgb(${redValue}, 0, 0)`;
-      
-      ctx.fillStyle = flashColor;
-      ctx.fillRect(0, 0, width, height);
+      bgGradient.addColorStop(0, `rgba(${redValue}, 0, 0, 0.8)`);
+      bgGradient.addColorStop(0.7, `rgba(${redValue}, 0, 0, 0.3)`);
+      bgGradient.addColorStop(1, 'rgba(10, 10, 10, 0)');
+    } else {
+      bgGradient.addColorStop(0, 'rgba(10, 10, 10, 0.8)');
+      bgGradient.addColorStop(0.7, 'rgba(10, 10, 10, 0.3)');
+      bgGradient.addColorStop(1, 'rgba(10, 10, 10, 0)');
     }
     
-    ctx.fillStyle = '#1a1a1a';
+    ctx.fillStyle = bgGradient;
+    ctx.fillRect(0, 0, width, height);
+    
+    // Meter background
+    ctx.fillStyle = '#0a0a0a';
     ctx.strokeStyle = '#333';
     ctx.lineWidth = 2;
     ctx.fillRect(meterX, meterY, meterWidth, meterHeight);
@@ -150,6 +160,13 @@ const Waveform = ({ isPlaying, audioElements }) => {
         clipCountRef.current++;
         clipHoldRef.current = 60; // Hold clip indicator for 1 second
         warningFlashRef.current = 20; // Flash warning
+        
+        // Notify parent component about clipping - once per clip event
+        const now = Date.now();
+        if (onClippingChange && now - lastClipTimeRef.current > 500) {
+          lastClipTimeRef.current = now;
+          onClippingChange(true);
+        }
       }
       
       // Convert to dB
@@ -197,26 +214,9 @@ const Waveform = ({ isPlaying, audioElements }) => {
     ctx.lineTo(meterX + meterFillWidth, barY + barHeight + 5);
     ctx.stroke();
     
-    // Page background flash on clipping
+    // Decrement clip hold counter
     if (clipHoldRef.current > 0) {
       clipHoldRef.current--;
-      
-      // Flash entire page background red
-      if (warningFlashRef.current > 0) {
-        const flashIntensity = warningFlashRef.current / 20;
-        const redValue = Math.floor(255 * flashIntensity * 0.3);
-        const flashColor = `rgb(${redValue}, 0, 0)`;
-        
-        const container = document.querySelector('.container');
-        if (container) {
-          container.style.backgroundColor = flashColor;
-        }
-      } else {
-        const container = document.querySelector('.container');
-        if (container) {
-          container.style.backgroundColor = '#0a0a0a';
-        }
-      }
     }
     
     
@@ -292,13 +292,12 @@ const Waveform = ({ isPlaying, audioElements }) => {
       clipHoldRef.current = 0;
       warningFlashRef.current = 0;
       connectedSourcesRef.current.clear();
-      // Reset page background
-      const container = document.querySelector('.container');
-      if (container) {
-        container.style.backgroundColor = '#0a0a0a';
+      // Notify parent that clipping has stopped
+      if (onClippingChange) {
+        onClippingChange(false);
       }
     }
-  }, [isPlaying]);
+  }, [isPlaying, onClippingChange]);
   
   return (
     <div className="waveform-container peak-meter">

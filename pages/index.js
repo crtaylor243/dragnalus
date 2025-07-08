@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import {useState, useEffect} from "react";
+import {useState, useEffect, useRef} from "react";
 import {pick} from "next/dist/lib/pick";
 import Waveform from '../components/Waveform';
 
@@ -8,6 +8,10 @@ export default function Home() {
   const [musics, setMusics] = useState([]);
   const [image, setImage] = useState("");
   const [visitorIndex, setVisitorIndex] = useState(Math.floor(Math.random()*3));
+  const [isClipping, setIsClipping] = useState(false);
+  const [tennisBalls, setTennisBalls] = useState([]);
+  const [goodBoyMode, setGoodBoyMode] = useState(false);
+  const lastBallTimeRef = useRef(0);
 
   const visitorCounts = [69, 420, 666];
   const visitorCount = visitorCounts[visitorIndex];
@@ -88,6 +92,7 @@ export default function Home() {
     musics.forEach(m => m.pause());
     setMusics([]);
     setmusicCount(0);
+    setTennisBalls([]); // Clear tennis balls
 
     resetMedia();
     console.log("music count = ", musicCount);
@@ -96,6 +101,89 @@ export default function Home() {
   // Initialize default media on component mount
   useEffect(() => {
     resetMedia();
+  }, []);
+
+  // Handle tennis ball animation
+  const handleClipping = (clippingState) => {
+    setIsClipping(clippingState);
+    
+    // Add a new tennis ball when clipping starts (max 25 per second)
+    if (clippingState) {
+      const now = Date.now();
+      if (now - lastBallTimeRef.current < 40) return; // 1000ms / 25 = 40ms minimum interval
+      lastBallTimeRef.current = now;
+      
+      // Determine if this ball should bounce (20% chance)
+      const shouldBounce = Math.random() < 0.2;
+      
+      const newBall = {
+        id: Date.now() + Math.random(),
+        x: Math.random() * 90 + 5, // Random position between 5% and 95%
+        y: -40, // Start above viewport
+        vx: Math.random() * 60 - 30, // Horizontal velocity -30 to 30 px/s
+        vy: Math.random() * 50 - 25, // Initial velocity -25 to 25 px/s
+        rotation: 0,
+        rotationSpeed: Math.random() * 360 - 180, // Random rotation speed
+        shouldBounce: shouldBounce,
+        hasBounced: false,
+        startTime: Date.now()
+      };
+      setTennisBalls(prev => [...prev, newBall]);
+    }
+  };
+
+  // Physics animation for tennis balls
+  useEffect(() => {
+    let animationFrame;
+    const gravity = 980; // px/s²
+    let lastTime = Date.now();
+
+    const animate = () => {
+      const currentTime = Date.now();
+      const deltaTime = (currentTime - lastTime) / 1000; // Convert to seconds
+      lastTime = currentTime;
+
+      // Get divider position (approximate)
+      const footer = document.querySelector('footer');
+      const dividerY = footer ? footer.offsetTop - 10 : window.innerHeight * 0.75;
+
+      setTennisBalls(prev => prev.map(ball => {
+        let newVy = ball.vy + gravity * deltaTime;
+        let newY = ball.y + ball.vy * deltaTime + 0.5 * gravity * deltaTime * deltaTime;
+        let newX = ball.x + (ball.vx / window.innerWidth * 100) * deltaTime; // Convert px to percentage
+        let newHasBounced = ball.hasBounced;
+
+        // Check for bounce on divider
+        if (ball.shouldBounce && !ball.hasBounced && newY + 30 >= dividerY && ball.vy > 0) {
+          // Ball hit the divider
+          newVy = -Math.abs(ball.vy) * 0.7; // Bounce with 70% energy retention
+          newY = dividerY - 30; // Place ball at divider
+          newHasBounced = true;
+        }
+
+        const newRotation = ball.rotation + ball.rotationSpeed * deltaTime;
+
+        return {
+          ...ball,
+          x: newX,
+          y: newY,
+          vx: ball.vx,
+          vy: newVy,
+          rotation: newRotation,
+          hasBounced: newHasBounced
+        };
+      }).filter(ball => ball.y < window.innerHeight + 40)); // Remove balls that fell off screen
+
+      animationFrame = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+    };
   }, []);
 
   return (
@@ -111,7 +199,7 @@ export default function Home() {
         </h1>
 
         <img onClick={(e) => playMusic()} src={image} className="drag" />
-        <Waveform isPlaying={musicCount > 0} audioElements={musics} />
+        <Waveform isPlaying={musicCount > 0} audioElements={musics} onClippingChange={handleClipping} />
         
         <div className="card">
           { musicCount >= 30 &&
@@ -124,7 +212,7 @@ export default function Home() {
         
         <p className="drag-text">Click the photo. Keep clicking to reveal your <strong>inner noise musician</strong>.</p>
 
-        { musicCount >= 3 &&
+        { isClipping &&
             <div className="card">
               <button onClick={(e) => stopMusic()}>
                 <p className="drag-text">please god <strong>make it stop</strong></p>
@@ -138,6 +226,37 @@ export default function Home() {
           </h3>
         </footer>
       </main>
+
+      {/* Tennis balls */}
+      {goodBoyMode && tennisBalls.map(ball => (
+        <div
+          key={ball.id}
+          className="tennis-ball"
+          style={{
+            left: `${ball.x}%`,
+            top: `${ball.y}px`,
+            transform: `rotate(${ball.rotation}deg)`
+          }}
+        />
+      ))}
+
+      {/* Good Boy Mode Toggle */}
+      {isClipping && (
+        <div className="good-boy-toggle">
+          <label className="toggle-label">
+            <input
+              type="checkbox"
+              checked={goodBoyMode}
+              onChange={(e) => setGoodBoyMode(e.target.checked)}
+              className="toggle-input"
+            />
+            <span className="toggle-slider"></span>
+            <span className="toggle-text">
+              <strong>good boy</strong> mode
+            </span>
+          </label>
+        </div>
+      )}
     </div>
   )
 }

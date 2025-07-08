@@ -153,19 +153,21 @@ const Waveform = ({ isPlaying, audioElements, onClippingChange }) => {
         peak = Math.max(peak, rms * 2.5);
       }
       
-      // Check for clipping - lower threshold for multiple sources
-      const clipThreshold = Math.max(0.85, 0.99 - (sourceCount * 0.02));
-      if (peak >= clipThreshold || (sourceCount >= 3 && peak >= 0.85)) {
-        isClipping = true;
-        clipCountRef.current++;
-        clipHoldRef.current = 60; // Hold clip indicator for 1 second
-        warningFlashRef.current = 20; // Flash warning
-        
-        // Notify parent component about clipping - once per clip event
-        const now = Date.now();
-        if (onClippingChange && now - lastClipTimeRef.current > 500) {
-          lastClipTimeRef.current = now;
-          onClippingChange(true);
+      // Check for clipping - only when multiple sources are active
+      if (sourceCount > 1) {
+        const clipThreshold = Math.max(0.85, 0.99 - (sourceCount * 0.02));
+        if (peak >= clipThreshold || (sourceCount >= 3 && peak >= 0.85)) {
+          isClipping = true;
+          clipCountRef.current++;
+          clipHoldRef.current = 60; // Hold clip indicator for 1 second
+          warningFlashRef.current = 20; // Flash warning
+          
+          // Notify parent component about clipping - once per clip event
+          const now = Date.now();
+          if (onClippingChange && now - lastClipTimeRef.current > 500) {
+            lastClipTimeRef.current = now;
+            onClippingChange(true);
+          }
         }
       }
       

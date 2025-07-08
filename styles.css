@@ -16,7 +16,7 @@ body {
 .container {
     min-height: 100vh;
     background: #0a0a0a;
-    padding: 0 0.5rem 200px 0.5rem; /* Add bottom padding for fixed footer */
+    padding: 0 0.5rem 280px 0.5rem; /* Add bottom padding for fixed footer */
     display: flex;
     /*flex-direction: column;*/
     align-items: flex-start;
@@ -39,7 +39,7 @@ footer {
     left: 0;
     right: 0;
     width: 100%;
-    height: 200px;
+    height: 280px;
     border-top: 2px solid #5d4426;
     background-color: #0a0a0a;
     z-index: 500;
@@ -64,6 +64,20 @@ footer .waveform-container {
     flex-shrink: 0;
 }
 
+.footer-text {
+    padding: 10px 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.rank-text {
+    margin-bottom: 5px;
+}
+
+.footer-text .drag-text {
+    margin: 5px 0;
+}
+
 .visitor-count {
     margin: 0;
 }
@@ -71,6 +85,10 @@ footer .waveform-container {
 h3 {
     font-size: clamp(14px, 2vw, 19px);
     margin: 20px 0;
+    position: relative;
+    z-index: 200;
+    display: inline-block;
+    background-color: #0a0a0a;
 }
 
 strong {
@@ -96,7 +114,7 @@ button {
     border: 2px solid #946928;
     color: #f5f5dc;
     position: relative;
-    z-index: 1000; /* Above tennis balls */
+    z-index: 200; /* Above tennis balls */
 }
 
 .stop-button {
@@ -118,7 +136,9 @@ button:hover {
     line-height: 1.15;
     font-size: 66px;
     position: relative;
-    z-index: 1000; /* Above tennis balls */
+    z-index: 200;
+    display: inline-block;
+    background-color: #0a0a0a;
 }
 
 .title,
@@ -164,16 +184,24 @@ code {
     width: 60%;
     height: auto;
     transition: opacity 0.3s ease-in-out;
+    position: relative;
+    z-index: 200; /* Above tennis balls */
 }
 
 .drag-text {
     font-size: clamp(14px, 2vw, 18px);
     margin: 10px 0 25px 0;
+    position: relative;
+    z-index: 200;
+    display: inline-block;
+    background-color: #0a0a0a;
 }
 
 button .drag-text {
     margin: 0;
     font-size: clamp(12px, 1.5vw, 16px);
+    background: none;
+    display: block;
 }
 
 @media screen and (min-width: 1300px) {
@@ -239,7 +267,7 @@ button .drag-text {
         inset 2px 2px 3px rgba(255, 255, 255, 0.3),
         2px 2px 12px rgba(0, 0, 0, 0.6);
     top: -40px;
-    z-index: 100; /* Above content but below header */
+    z-index: 150; /* Between background and content */
     pointer-events: none;
 }
 

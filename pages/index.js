@@ -12,6 +12,7 @@ export default function Home() {
   const [isClipping, setIsClipping] = useState(false);
   const [tennisBalls, setTennisBalls] = useState([]);
   const [goodBoyMode, setGoodBoyMode] = useState(true);
+  const [clipCount, setClipCount] = useState(0);
 
   const visitorCounts = [69, 420, 666];
   const visitorCount = visitorCounts[visitorIndex];
@@ -91,6 +92,7 @@ export default function Home() {
     setMusics([]);
     setmusicCount(0);
     setTennisBalls([]); // Clear tennis balls
+    setClipCount(0); // Reset clip count
 
     resetMedia();
     console.log("music count = ", musicCount);
@@ -111,43 +113,97 @@ export default function Home() {
   // Handle tennis ball animation
   const handleClipping = (clippingState) => {
     setIsClipping(clippingState);
+    // Increment clip count when clipping occurs
+    if (clippingState) {
+      setClipCount(prev => {
+        const newCount = prev + 1;
+        console.log("clip count = ", newCount);
+        return newCount;
+      });
+    }
   };
+
+  // Tennis ball spawning for single audio source
+  useEffect(() => {
+    if (musicCount === 1 && !isClipping) {
+      const spawnSingleBall = () => {
+        // Only spawn if no balls on screen
+        if (tennisBalls.length === 0) {
+          const shouldBounce = Math.random() < 0.9;
+          
+          const newBall = {
+            id: Date.now() + Math.random(),
+            x: Math.random() * 100,
+            y: -40,
+            vx: Math.random() * 600 - 300,
+            vy: Math.random() * 200 - 100,
+            rotation: 0,
+            rotationSpeed: Math.random() * 720 - 360,
+            shouldBounce: shouldBounce,
+            hasBounced: false,
+            startTime: Date.now()
+          };
+          
+          setTennisBalls(prev => prev.length === 0 ? [newBall] : prev);
+        }
+      };
+
+      const interval = setInterval(spawnSingleBall, 1000); // Spawn one ball every second
+      
+      return () => clearInterval(interval);
+    }
+  }, [musicCount, isClipping, tennisBalls.length]);
 
   // Continuous ball spawning while clipping
   useEffect(() => {
     if (!isClipping) return;
 
     const spawnBalls = () => {
-      // Spawn multiple balls per frame for maximum chaos
-      for (let i = 0; i < 3; i++) {
-        // Determine if this ball should bounce (90% chance)
-        const shouldBounce = Math.random() < 0.9;
-        
-        // Get image bottom position to spawn balls below it
-        const imgElement = document.querySelector('.drag');
-        const imageBottom = imgElement ? imgElement.offsetTop + imgElement.offsetHeight + 50 : 300;
+      // Determine max balls based on rank
+      let maxBalls;
+      if (clipCount >= 50) {
+        maxBalls = Infinity; // Unlimited for Noise God
+      } else if (clipCount >= 25) {
+        maxBalls = 10; // 10 balls for Crate Digger
+      } else {
+        maxBalls = 5; // 5 balls for Shoegazer
+      }
 
-        const newBall = {
-          id: Date.now() + Math.random() + i,
-          x: Math.random() * 90 + 5, // Random position between 5% and 95%
-          y: imageBottom, // Start below the image
-          vx: Math.random() * 300 - 150, // Much higher horizontal velocity -150 to 150 px/s
-          vy: Math.random() * 100 + 50, // Initial downward velocity 50 to 150 px/s
-          rotation: 0,
-          rotationSpeed: Math.random() * 720 - 360, // Faster rotation
-          shouldBounce: shouldBounce,
-          hasBounced: false,
-          startTime: Date.now()
-        };
-        
-        setTennisBalls(prev => [...prev, newBall]);
+      // Only spawn if we haven't reached the limit
+      if (tennisBalls.length < maxBalls) {
+        // Spawn multiple balls per frame for maximum chaos
+        for (let i = 0; i < 3; i++) {
+          // Determine if this ball should bounce (90% chance)
+          const shouldBounce = Math.random() < 0.9;
+          
+          const newBall = {
+            id: Date.now() + Math.random() + i,
+            x: Math.random() * 100, // Random position across full screen width 0-100%
+            y: -40, // Start above viewport so they can fall anywhere
+            vx: Math.random() * 600 - 300, // Much stronger horizontal velocity -300 to 300 px/s
+            vy: Math.random() * 200 - 100, // Random vertical velocity -100 to 100 px/s (some go up!)
+            rotation: 0,
+            rotationSpeed: Math.random() * 720 - 360, // Faster rotation
+            shouldBounce: shouldBounce,
+            hasBounced: false,
+            startTime: Date.now()
+          };
+          
+          setTennisBalls(prev => {
+            // Check again to prevent race conditions
+            if (prev.length < maxBalls) {
+              return [...prev, newBall];
+            }
+            return prev;
+          });
+        }
       }
     };
 
     const interval = setInterval(spawnBalls, 50); // Spawn every 50ms
     
     return () => clearInterval(interval);
-  }, [isClipping]);
+  }, [isClipping, clipCount, tennisBalls.length]);
 
   // Physics animation for tennis balls
   useEffect(() => {
@@ -161,7 +217,7 @@ export default function Home() {
       lastTime = currentTime;
 
       // Get divider position (top of footer)
-      const footerHeight = 200; // Fixed footer height
+      const footerHeight = 280; // Fixed footer height
       const dividerY = window.innerHeight - footerHeight - 10;
 
       setTennisBalls(prev => prev.map(ball => {
@@ -221,17 +277,6 @@ export default function Home() {
         </h1>
 
         <img onClick={(e) => playMusic()} src={image} className="drag" />
-        
-        <div className="card">
-          { musicCount >= 30 &&
-            <h3>Rank: <strong>Noise God</strong></h3>
-          }
-          { musicCount < 30 &&
-          <h3>&nbsp;</h3>
-          }
-        </div>
-        
-        <p className="drag-text">Click the photo. Keep clicking to reveal your <strong>inner noise musician</strong>.</p>
 
       </main>
 
@@ -251,6 +296,26 @@ export default function Home() {
       {/* Footer */}
       <footer>
         <Waveform isPlaying={musicCount > 0} audioElements={musics} onClippingChange={handleClipping} />
+        
+        {/* Text content below VU meter */}
+        <div className="footer-text">
+          <div className="rank-text">
+            { clipCount >= 50 &&
+              <h3>Rank: <strong>Noise God</strong></h3>
+            }
+            { clipCount >= 25 && clipCount < 50 &&
+              <h3>Rank: <strong>Crate Digger</strong></h3>
+            }
+            { clipCount > 0 && clipCount < 25 &&
+              <h3>Rank: <strong>Shoegazer</strong></h3>
+            }
+            { clipCount === 0 &&
+            <h3>&nbsp;</h3>
+            }
+          </div>
+          <p className="drag-text">Click the photo. Keep clicking to reveal your <strong>inner noise musician</strong>.</p>
+        </div>
+        
         <div className="footer-content">
           <h3 className="visitor-count">
             Visitor count: <strong>{visitorCount}</strong>

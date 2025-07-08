@@ -110,7 +110,7 @@ const Waveform = ({ isPlaying, audioElements }) => {
       ctx.fillText(db, x, meterY - 8);
       
       // Scale lines
-      ctx.strokeStyle = db === 0 ? '#ff0000' : '#946928';
+      ctx.strokeStyle = db === 0 ? '#8a3a3a' : '#946928';
       ctx.lineWidth = db === 0 ? 2 : 1;
       ctx.beginPath();
       ctx.moveTo(x, meterY);
@@ -177,20 +177,20 @@ const Waveform = ({ isPlaying, audioElements }) => {
     const meterLevel = peakLevelRef.current.left;
     const meterFillWidth = meterLevel * meterWidth;
     
-    // Gradient based on level
+    // Gradient based on level (muted colors)
     const gradient = ctx.createLinearGradient(meterX, 0, meterX + meterWidth, 0);
-    gradient.addColorStop(0, '#00ff00');
-    gradient.addColorStop(0.5, '#00ff00');
-    gradient.addColorStop(0.7, '#ffff00');
-    gradient.addColorStop(0.85, '#ff8800');
-    gradient.addColorStop(0.95, '#ff0000');
-    gradient.addColorStop(1, '#ff0000');
+    gradient.addColorStop(0, '#4a6741');
+    gradient.addColorStop(0.5, '#4a6741');
+    gradient.addColorStop(0.7, '#7a7a3a');
+    gradient.addColorStop(0.85, '#8a5a2a');
+    gradient.addColorStop(0.95, '#8a3a3a');
+    gradient.addColorStop(1, '#8a3a3a');
     
     ctx.fillStyle = gradient;
     ctx.fillRect(meterX, barY, meterFillWidth, barHeight);
     
     // Peak hold line
-    ctx.strokeStyle = '#ffffff';
+    ctx.strokeStyle = '#d0d0c0';
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(meterX + meterFillWidth, barY - 5);

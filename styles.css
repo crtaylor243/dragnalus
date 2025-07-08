@@ -126,6 +126,7 @@ code {
     mask-image: radial-gradient(ellipse, rgba(0, 0, 0, 1.0) 60%, transparent 100%);
     width: 60%;
     height: auto;
+    transition: opacity 0.3s ease-in-out;
 }
 
 .drag-text {

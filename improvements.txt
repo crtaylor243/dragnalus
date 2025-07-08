@@ -1,0 +1,41 @@
+UI/UX Improvements for dragnal.us
+
+Visual Feedback & Animation
+- Add CSS transitions when images change (fade/slide effect)
+- Animate the click with ripple effects or scale transforms
+- Show click counter badge or progress bar toward achievements
+- Add visual audio waveforms or pulsing effects when music plays
+- Implement cursor change on hover (musical note icon)
+
+Enhanced Interactivity
+- Volume control slider to adjust chaos level
+- Preset buttons: "Mild Noise", "Pure Chaos", "Noise God Mode"
+- Share button to capture and share your "noise creation"
+- Achievement badges: "First Timer", "Noise Apprentice", "Chaos Master"
+- Sound visualization using Web Audio API
+
+Improved Accessibility
+- Add keyboard controls (spacebar to play, ESC to stop)
+- Better contrast for brown text (#95682a) on light background
+- Alt text for images
+- Focus indicators for interactive elements
+- Prefers-reduced-motion support
+
+Mobile Experience
+- Touch feedback (haptic vibration on supported devices)
+- Swipe gestures for different sound effects
+- Better responsive breakpoints for tablets
+- Larger touch targets on mobile
+
+Gamification
+- Leaderboard for longest listening sessions
+- Different audio tracks unlocked at milestones
+- Daily challenges ("Reach Noise God in under 20 seconds")
+- Easter eggs (special effects at 69, 420, 666 clicks)
+
+Performance & Polish
+- Loading indicator while audio buffers
+- Smooth audio fade-out instead of abrupt stop
+- Prevent memory leaks by limiting audio instances
+- Add subtle background pattern or gradient
+- Custom 404 page maintaining the theme

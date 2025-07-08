@@ -1,37 +1,58 @@
 import Head from 'next/head'
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {pick} from "next/dist/lib/pick";
 import Waveform from '../components/Waveform';
 
 export default function Home() {
-  const defaultImage = isBirthday() ? "drag-1-bday.jpg" : "drag-1.jpg";
-
   const [musicCount, setmusicCount] = useState(0);
   const [musics, setMusics] = useState([]);
-  const [image, setImage] = useState(defaultImage);
+  const [image, setImage] = useState("");
   const [visitorIndex, setVisitorIndex] = useState(Math.floor(Math.random()*3));
 
   const visitorCounts = [69, 420, 666];
   const visitorCount = visitorCounts[visitorIndex];
 
 
-  function pickImage() {
+  const checkImageExists = (src) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = src;
+    });
+  };
+
+  async function pickMedia() {
     const base = "drag-";
-    const tail = ".jpg";
     const birthday = isBirthday() ? "-bday" : "";
-    let img = 1;
+    let num = 1;
 
     if (musicCount >= 30) {
-      img = 4;
+      num = 4;
     } else if (musicCount >= 20) {
-      img = 3;
+      num = 3;
     } else if (musicCount >= 10) {
-      img = 2;
+      num = 2;
     }
 
-    const image = base + img + birthday + tail;
-    console.log("picking image: ", image)
-    setImage(image);
+    // Try GIF first, then fallback to JPG
+    const gifPath = base + num + birthday + ".gif";
+    const jpgPath = base + num + birthday + ".jpg";
+    
+    const gifExists = await checkImageExists(gifPath);
+    const newMedia = gifExists ? gifPath : jpgPath;
+    
+    // Only fade if the media is actually changing
+    if (newMedia !== image) {
+      const mediaElement = document.querySelector('.drag');
+      if (mediaElement) {
+        mediaElement.style.opacity = '0';
+        setTimeout(() => {
+          setImage(newMedia);
+          mediaElement.style.opacity = '1';
+        }, 150); // Half of the transition duration
+      }
+    }
   }
 
   function isBirthday() {
@@ -41,8 +62,15 @@ export default function Home() {
         birthDate.getMonth() === today.getMonth();
   }
 
-  function resetImage() {
-    setImage(defaultImage);
+  async function resetMedia() {
+    const base = "drag-1";
+    const birthday = isBirthday() ? "-bday" : "";
+    const gifPath = base + birthday + ".gif";
+    const jpgPath = base + birthday + ".jpg";
+    
+    const gifExists = await checkImageExists(gifPath);
+    const media = gifExists ? gifPath : jpgPath;
+    setImage(media);
   }
 
   function playMusic() {;
@@ -52,7 +80,7 @@ export default function Home() {
     music.play();
     setmusicCount(musicCount + 1);
     setMusics([...musics, music]);
-    pickImage()
+    pickMedia()
     console.log("music count = ", musicCount);
   }
 
@@ -61,9 +89,14 @@ export default function Home() {
     setMusics([]);
     setmusicCount(0);
 
-    resetImage();
+    resetMedia();
     console.log("music count = ", musicCount);
   }
+
+  // Initialize default media on component mount
+  useEffect(() => {
+    resetMedia();
+  }, []);
 
   return (
     <div className="container">
@@ -81,10 +114,10 @@ export default function Home() {
         <Waveform isPlaying={musicCount > 0} audioElements={musics} />
         
         <div className="card">
-          { musicCount >= 10 &&
+          { musicCount >= 30 &&
             <h3>Rank: <strong>Noise God</strong></h3>
           }
-          { musicCount < 10 &&
+          { musicCount < 30 &&
           <h3>&nbsp;</h3>
           }
         </div>

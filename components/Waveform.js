@@ -241,7 +241,7 @@ const Waveform = ({ isPlaying, audioElements, onClippingChange }) => {
     
     const resizeCanvas = () => {
       canvas.width = container.clientWidth;
-      canvas.height = 140;
+      canvas.height = 70;
     };
     
     resizeCanvas();

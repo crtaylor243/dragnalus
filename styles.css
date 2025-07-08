@@ -53,7 +53,8 @@ footer {
     align-items: center;
     height: 70px;
     padding: 0 20px;
-    gap: 20px;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 footer .waveform-container {
@@ -121,8 +122,9 @@ button {
     max-width: none;
     width: auto;
     margin: 0;
-    padding: 6px 24px;
+    padding: 6px 16px;
     white-space: nowrap;
+    font-size: clamp(10px, 2.5vw, 14px);
 }
 
 button:hover {
@@ -132,7 +134,7 @@ button:hover {
 }
 
 .title {
-    margin: 0 0 40px 0;
+    margin: 0 0 5px 0;
     line-height: 1.15;
     font-size: 66px;
     position: relative;
@@ -190,7 +192,7 @@ code {
 
 .drag-text {
     font-size: clamp(14px, 2vw, 18px);
-    margin: 10px 0 25px 0;
+    margin: 0 0 25px 0;
     position: relative;
     z-index: 200;
     display: inline-block;
@@ -215,6 +217,24 @@ button .drag-text {
     .drag {
         width: 307px;
         height: 312px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        height: auto;
+        min-height: 70px;
+        padding: 10px;
+        gap: 10px;
+    }
+    
+    .visitor-count {
+        font-size: 14px;
+    }
+    
+    .toggle-text {
+        font-size: 12px;
     }
 }
 

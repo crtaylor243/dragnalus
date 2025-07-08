@@ -276,7 +276,24 @@ export default function Home() {
           Dragnal.<strong>us</strong>
         </h1>
 
+        <p className="drag-text">Click the photo to reveal your <strong>inner noise musician</strong>.</p>
+
         <img onClick={(e) => playMusic()} src={image} className="drag" />
+
+        <div className="rank-text">
+          { clipCount >= 50 &&
+            <h3>Rank: <strong>Noise God</strong></h3>
+          }
+          { clipCount >= 25 && clipCount < 50 &&
+            <h3>Rank: <strong>Crate Digger</strong></h3>
+          }
+          { clipCount > 0 && clipCount < 25 &&
+            <h3>Rank: <strong>Shoegazer</strong></h3>
+          }
+          { clipCount === 0 &&
+          <h3>&nbsp;</h3>
+          }
+        </div>
 
       </main>
 
@@ -297,24 +314,6 @@ export default function Home() {
       <footer>
         <Waveform isPlaying={musicCount > 0} audioElements={musics} onClippingChange={handleClipping} />
         
-        {/* Text content below VU meter */}
-        <div className="footer-text">
-          <div className="rank-text">
-            { clipCount >= 50 &&
-              <h3>Rank: <strong>Noise God</strong></h3>
-            }
-            { clipCount >= 25 && clipCount < 50 &&
-              <h3>Rank: <strong>Crate Digger</strong></h3>
-            }
-            { clipCount > 0 && clipCount < 25 &&
-              <h3>Rank: <strong>Shoegazer</strong></h3>
-            }
-            { clipCount === 0 &&
-            <h3>&nbsp;</h3>
-            }
-          </div>
-          <p className="drag-text">Click the photo. Keep clicking to reveal your <strong>inner noise musician</strong>.</p>
-        </div>
         
         <div className="footer-content">
           <h3 className="visitor-count">

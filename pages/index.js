@@ -217,7 +217,7 @@ export default function Home() {
       lastTime = currentTime;
 
       // Get divider position (top of footer)
-      const footerHeight = 280; // Fixed footer height
+      const footerHeight = 150; // Fixed footer height
       const dividerY = window.innerHeight - footerHeight - 10;
 
       setTennisBalls(prev => prev.map(ball => {

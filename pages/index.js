@@ -110,6 +110,57 @@ export default function Home() {
     }
   }, [imageNumber]);
 
+  const CASSETTE_PLAYER_DIMENSIONS = {
+    left: 24,
+    bottom: 170,
+    width: 140,
+    height: 90
+  };
+
+  const getProjectileType = () => {
+    if (clipCount >= 50) return 'cassette';
+    if (clipCount >= 25) return 'vinyl';
+    return 'tennis';
+  };
+
+  const getSpawnPosition = (type) => {
+    if (type === 'cassette' && typeof window !== 'undefined') {
+      const viewportHeight = window.innerHeight;
+      const viewportWidth = window.innerWidth;
+      const spawnXPx = CASSETTE_PLAYER_DIMENSIONS.left + (CASSETTE_PLAYER_DIMENSIONS.width / 2) + (Math.random() * 30 - 15);
+      const spawnXPercent = (spawnXPx / viewportWidth) * 100;
+      const spawnY = viewportHeight - CASSETTE_PLAYER_DIMENSIONS.bottom - (CASSETTE_PLAYER_DIMENSIONS.height * 0.4);
+      return {
+        x: spawnXPercent,
+        y: spawnY,
+      };
+    }
+
+    return {
+      x: Math.random() * 100,
+      y: -40,
+    };
+  };
+
+  const createProjectile = (type) => {
+    const {x, y} = getSpawnPosition(type);
+    const isCassette = type === 'cassette';
+
+    return {
+      id: Date.now() + Math.random(),
+      type,
+      x,
+      y,
+      vx: isCassette ? Math.random() * 240 - 120 : Math.random() * 600 - 300,
+      vy: isCassette ? Math.random() * -200 - 100 : Math.random() * 200 - 100,
+      rotation: 0,
+      rotationSpeed: Math.random() * 720 - 360,
+      shouldBounce: !isCassette && Math.random() < 0.9,
+      hasBounced: false,
+      startTime: Date.now()
+    };
+  };
+
   // Handle tennis ball animation
   const handleClipping = (clippingState) => {
     setIsClipping(clippingState);
@@ -129,20 +180,8 @@ export default function Home() {
       const spawnSingleBall = () => {
         // Only spawn if no balls on screen
         if (tennisBalls.length === 0) {
-          const shouldBounce = Math.random() < 0.9;
-          
-          const newBall = {
-            id: Date.now() + Math.random(),
-            x: Math.random() * 100,
-            y: -40,
-            vx: Math.random() * 600 - 300,
-            vy: Math.random() * 200 - 100,
-            rotation: 0,
-            rotationSpeed: Math.random() * 720 - 360,
-            shouldBounce: shouldBounce,
-            hasBounced: false,
-            startTime: Date.now()
-          };
+          const projectileType = getProjectileType();
+          const newBall = createProjectile(projectileType);
           
           setTennisBalls(prev => prev.length === 0 ? [newBall] : prev);
         }
@@ -152,7 +191,7 @@ export default function Home() {
       
       return () => clearInterval(interval);
     }
-  }, [musicCount, isClipping, tennisBalls.length]);
+  }, [musicCount, isClipping, tennisBalls.length, clipCount]);
 
   // Continuous ball spawning while clipping
   useEffect(() => {
@@ -174,20 +213,8 @@ export default function Home() {
         // Spawn multiple balls per frame for maximum chaos
         for (let i = 0; i < 3; i++) {
           // Determine if this ball should bounce (90% chance)
-          const shouldBounce = Math.random() < 0.9;
-          
-          const newBall = {
-            id: Date.now() + Math.random() + i,
-            x: Math.random() * 100, // Random position across full screen width 0-100%
-            y: -40, // Start above viewport so they can fall anywhere
-            vx: Math.random() * 600 - 300, // Much stronger horizontal velocity -300 to 300 px/s
-            vy: Math.random() * 200 - 100, // Random vertical velocity -100 to 100 px/s (some go up!)
-            rotation: 0,
-            rotationSpeed: Math.random() * 720 - 360, // Faster rotation
-            shouldBounce: shouldBounce,
-            hasBounced: false,
-            startTime: Date.now()
-          };
+          const projectileType = getProjectileType();
+          const newBall = createProjectile(projectileType);
           
           setTennisBalls(prev => {
             // Check again to prevent race conditions
@@ -297,18 +324,37 @@ export default function Home() {
 
       </main>
 
+      {clipCount >= 50 && (
+        <div className="cassette-player" aria-hidden="true">
+          <div className="cassette-window">
+            <span className="cassette-reel"></span>
+            <span className="cassette-reel"></span>
+          </div>
+          <div className="cassette-label">hi-fi mixtape</div>
+          <div className="cassette-vents"></div>
+        </div>
+      )}
+
       {/* Tennis balls */}
-      {goodBoyMode && tennisBalls.map(ball => (
-        <div
-          key={ball.id}
-          className="tennis-ball"
-          style={{
-            left: `${ball.x}%`,
-            top: `${ball.y}px`,
-            transform: `rotate(${ball.rotation}deg)`
-          }}
-        />
-      ))}
+      {goodBoyMode && tennisBalls.map(ball => {
+        const projectileClass = ball.type === 'vinyl'
+          ? 'vinyl-record'
+          : ball.type === 'cassette'
+            ? 'cassette-tape'
+            : 'tennis-ball';
+
+        return (
+          <div
+            key={ball.id}
+            className={`projectile ${projectileClass}`}
+            style={{
+              left: `${ball.x}%`,
+              top: `${ball.y}px`,
+              transform: `rotate(${ball.rotation}deg)`
+            }}
+          />
+        );
+      })}
 
       {/* Footer */}
       <footer>
